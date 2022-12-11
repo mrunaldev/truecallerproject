@@ -15,7 +15,7 @@ var PrefixList []string
 
 // Function to find the longest common prefix
 
-func findLongestCommonPrefix(strs []string) string {
+func FindLongestCommonPrefix(strs []string) string {
 	var longestPrefix string = ""
 	var endPrefix = false
 
@@ -53,5 +53,5 @@ func main() {
 	}
 	wg.Wait()
 	// sort.Strings(PrefixList)
-	fmt.Println(findLongestCommonPrefix(PrefixList))
+	fmt.Println(FindLongestCommonPrefix(PrefixList))
 }
