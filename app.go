@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"math/rand"
 	"os"
 	"sort"
@@ -10,11 +10,16 @@ import (
 	"time"
 )
 
-var wg sync.WaitGroup
-var PrefixList []string
+var (
+	wg         sync.WaitGroup
+	PrefixList []string
+)
+
+const (
+	inputFile = "sample_prefixes.txt"
+)
 
 // Function to find the longest common prefix
-
 func FindLongestCommonPrefix(strs []string) string {
 	var longestPrefix string = ""
 	var endPrefix = false
@@ -36,22 +41,39 @@ func FindLongestCommonPrefix(strs []string) string {
 }
 func processLine(line string) {
 	time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
-	// fmt.Println("line:", line)
+	// log.Println("line:", line)
 	PrefixList = append(PrefixList, line)
 	wg.Done()
 }
 func main() {
-	// output := findLongestCommonPrefix([]string{"fayjn", "fayut", "fayume", "fayutom", "dslkgjkls"})
+	// Open input file
+	reader, err := os.Open(inputFile)
+	if err != nil {
+		log.Panic(err)
+	}
 
-	file := "sample_prefixes.txt"
-	reader, _ := os.Open(file)
+	// Close reader on exit and check for its returned error
+	defer func() {
+		if err := reader.Close(); err != nil {
+			log.Panic(err)
+		}
+	}()
+
+	// Read each line from the input config file using goroutines
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
 		wg.Add(1)
 		go processLine(scanner.Text())
-
 	}
 	wg.Wait()
-	// sort.Strings(PrefixList)
-	fmt.Println(FindLongestCommonPrefix(PrefixList))
+
+	// Find the Longest Common Prefix from input list
+	lcp := FindLongestCommonPrefix(PrefixList)
+
+	// Process the result. In this case we would just cehck and print it.
+	if lcp != "" {
+		log.Println("There was no longest common prefix found with the provided list of inputs")
+	} else {
+		log.Println("Longest common prefix found is : ", lcp)
+	}
 }
